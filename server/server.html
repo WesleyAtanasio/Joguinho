@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css"> <!-- Reutilizando o mesmo CSS, mas podemos ajustar depois -->
+    <title>Escolha sua Picavara e Vacalo</title>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Escolha sua Picavara e Vacalo</h1>
+
+        <!-- Seção de Picavaras -->
+        <h2>Escolha sua Picavara</h2>
+        <div class="picavara-options">
+            <div class="option" data-picavara="picavara1">
+                <img src="../img/assassina.png" alt="Picavara Assassina">
+                <p>Picavara Assassina</p>
+            </div>
+            <div class="option" data-picavara="picavara2">
+                <img src="../img/tanque.png" alt="Picavara Tanque">
+                <p>Picavara Tanque</p>
+            </div>
+            <div class="option" data-picavara="picavara3">
+                <img src="../img/falaefilma.jpg" alt="Picavara Fala E Filma">
+                <p>Picavara Fala E Filma</p>
+            </div>
+        </div>
+
+        <!-- Seção de Vacalos -->
+        <h2>Escolha seu Vacalo</h2>
+        <div class="vacalo-options">
+            <div class="option" data-vacalo="vacalo1">
+                <img src="images/vacalo1.png" alt="Vacalo Espadachim">
+                <p>Vacalo Espadachim</p>
+            </div>
+            <div class="option" data-vacalo="vacalo2">
+                <img src="images/vacalo2.png" alt="Vacalo Arqueiro">
+                <p>Vacalo Arqueiro</p>
+            </div>
+            <div class="option" data-vacalo="vacalo3">
+                <img src="images/vacalo3.png" alt="Vacalo Mago">
+                <p>Vacalo Mago</p>
+            </div>
+            <div class="option" data-vacalo="vacalo4">
+                <img src="images/vacalo4.png" alt="Vacalo Ladrão">
+                <p>Vacalo Ladrão</p>
+            </div>
+            <div class="option" data-vacalo="vacalo5">
+                <img src="images/vacalo5.png" alt="Vacalo Paladino">
+                <p>Vacalo Paladino</p>
+            </div>
+            <div class="option" data-vacalo="vacalo6">
+                <img src="images/vacalo6.png" alt="Vacalo Bárbaro">
+                <p>Vacalo Bárbaro</p>
+            </div>
+        </div>
+        
+
+        <!-- Botão para confirmar e criar a sala -->
+        <button id="create-room-btn" class="button" disabled>Criar Sala</button>
+        <div id="roomInfo" style="color: white; margin-top: 20px;"></div>
+    </div>
+
+    <script src="server.js"></script>
+</body>
+</html>
