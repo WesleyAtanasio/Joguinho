@@ -8,16 +8,14 @@ if (!roomId) {
     window.location.href = '../index.html';
 }
 
-// Reassociar o socket à sala
 socket.emit('rejoinRoom', roomId);
 
-// Solicitar informações iniciais da sala
 setTimeout(() => {
     socket.emit('getRoomInfo', roomId);
 }, 500);
 
 socket.on('roomInfo', (roomData) => {
-    if (!roomData || !roomData.players || !roomData.host) {
+    if (!roomData || !roomData.host) {
         console.error('Dados da sala inválidos:', roomData);
         alert('Erro ao carregar a sala');
         window.location.href = '../index.html';
@@ -27,11 +25,16 @@ socket.on('roomInfo', (roomData) => {
 });
 
 socket.on('roomUpdated', (roomData) => {
-    if (!roomData || !roomData.players || !roomData.host) {
+    if (!roomData || !roomData.host) {
         console.error('Dados da sala inválidos:', roomData);
         return;
     }
     updateRoom(roomData);
+});
+
+socket.on('startGame', ({ roomId, gameState }) => {
+    console.log(`Recebido startGame para a sala ${roomId}, redirecionando para game.html`);
+    window.location.href = `game.html?roomId=${roomId}`;
 });
 
 function updateRoom(roomData) {
@@ -55,12 +58,16 @@ function updatePlayerList(players) {
     playerList.innerHTML = '';
     players.forEach(player => {
         const li = document.createElement('li');
-        li.textContent = `${player.name} ${player.picavara && player.vacalo ? `(Picavara ${player.picavara}, Vacalo ${player.vacalo})` : ''}`;
+        li.textContent = `${player.name} ${player.picavara && player.vacalo ? `(Picavara ${player.picavara}, Vacalo ${player.vacalo})` : ''} ${player.connected ? '' : '(Desconectado)'}`;
         playerList.appendChild(li);
     });
 
     const startGameBtn = document.getElementById('startGameBtn');
-    startGameBtn.disabled = players.length < 2;
+    startGameBtn.disabled = players.length < 2 || !players.every(p => p.connected);
+    startGameBtn.onclick = () => {
+        console.log('Botão Iniciar Jogo clicado');
+        socket.emit('startGame');
+    };
 }
 
 socket.on('error', (message) => {

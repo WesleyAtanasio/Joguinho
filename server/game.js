@@ -1,12 +1,17 @@
-const socket = io('http://localhost:3000'); // Ajuste a URL conforme seu servidor
+const socket = io('http://localhost:3000');
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Estado do jogo
 let playerId;
 let players = {};
+const urlParams = new URLSearchParams(window.location.search);
+const roomId = urlParams.get('roomId');
 
-// Carregar imagens dos personagens
+if (!roomId) {
+    alert('Erro: Nenhum ID de sala fornecido!');
+    window.location.href = '../index.html';
+}
+
 const images = {
     Assassina: new Image(), Tanque: new Image(), 'Fala E Filma': new Image(),
     Laercio: new Image(), Tibi: new Image(), Lelek: new Image(),
@@ -22,40 +27,34 @@ images.Dudu.src = '../img/dudu.png';
 images.Araumicio.src = '../img/araumicio.png';
 images.Lele.src = '../img/lele.png';
 
-// Desenhar o jogo
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Desenhar jogadores
     for (const id in players) {
         const player = players[id];
         const img = images[player.character];
         if (img.complete) {
-            ctx.drawImage(img, player.x, player.y, 50, 50); // Tamanho 50x50
+            ctx.drawImage(img, player.x, player.y, 50, 50);
         }
     }
-
     requestAnimationFrame(draw);
 }
 
-// Receber estado inicial
-socket.on('initGame', (data) => {
-    playerId = data.playerId;
-    players = data.players;
-    draw();
+socket.on('startGame', ({ roomId: receivedRoomId, gameState }) => {
+    if (receivedRoomId === roomId) {
+        playerId = socket.id;
+        players = gameState.players;
+        draw();
+    }
 });
 
-// Atualizar estado
-socket.on('updateGame', (data) => {
-    players = data.players;
+socket.on('updateGame', (gameState) => {
+    players = gameState.players;
 });
 
-// Capturar teclas
 const keys = {};
 window.addEventListener('keydown', (e) => { keys[e.key] = true; });
 window.addEventListener('keyup', (e) => { keys[e.key] = false; });
 
-// Enviar movimento
 setInterval(() => {
     const direction = {
         up: keys['w'], left: keys['a'],
@@ -63,3 +62,6 @@ setInterval(() => {
     };
     socket.emit('move', direction);
 }, 100);
+
+// Reassociar o socket à sala ao carregar
+socket.emit('rejoinRoom', roomId);
