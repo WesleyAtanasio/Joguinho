@@ -1,16 +1,17 @@
-// Conectar ao servidor Socket.IO
 const socket = io('http://localhost:3000');
 
 let selectedPicavara = null;
 let selectedVacalo = null;
+let playerName = '';
 
-// Função para habilitar/desabilitar o botão de criar sala
 function updateCreateButton() {
     const createBtn = document.getElementById('create-room-btn');
-    createBtn.disabled = !(selectedPicavara && selectedVacalo);
+    playerName = document.getElementById('playerName').value.trim();
+    createBtn.disabled = !(selectedPicavara && selectedVacalo && playerName);
 }
 
-// Seleção de Picavaras
+document.getElementById('playerName').addEventListener('input', updateCreateButton);
+
 document.querySelectorAll('.picavara-options .option').forEach(option => {
     option.addEventListener('click', () => {
         selectedPicavara = option.getAttribute('data-picavara');
@@ -20,7 +21,6 @@ document.querySelectorAll('.picavara-options .option').forEach(option => {
     });
 });
 
-// Seleção de Vacalos
 document.querySelectorAll('.vacalo-options .option').forEach(option => {
     option.addEventListener('click', () => {
         selectedVacalo = option.getAttribute('data-vacalo');
@@ -30,18 +30,26 @@ document.querySelectorAll('.vacalo-options .option').forEach(option => {
     });
 });
 
-// Criar a sala ao clicar no botão
 document.getElementById('create-room-btn').addEventListener('click', () => {
-    socket.emit('createRoom', { picavara: selectedPicavara, vacalo: selectedVacalo });
+    if (!selectedPicavara || !selectedVacalo || !playerName) {
+        alert('Escolha uma Picavara, um Vacalo e digite seu nome!');
+        return;
+    }
+    console.log('Enviando createRoom:', { picavara: selectedPicavara, vacalo: selectedVacalo, name: playerName });
+    socket.emit('createRoom', { 
+        picavara: selectedPicavara, 
+        vacalo: selectedVacalo, 
+        name: playerName 
+    });
 });
 
-// Quando a sala é criada, exibe o ID
 socket.on('roomCreated', (roomId) => {
-    document.getElementById('roomInfo').innerText = `Sala criada! ID: ${roomId}\nPicavara: ${selectedPicavara}, Vacalo: ${selectedVacalo}`;
-    // Aqui você pode redirecionar para a tela do jogo futuramente
+    console.log('Sala criada com ID:', roomId);
+    window.location.href = `lobby.html?roomId=${roomId}`; // Corrigido o caminho (sem "../server/")
 });
 
-// Tratamento de erros
 socket.on('error', (message) => {
+    console.error('Erro em server.js:', message);
     alert(message);
+    window.location.href = '../index.html';
 });

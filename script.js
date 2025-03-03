@@ -7,8 +7,8 @@ document.querySelector('.host-btn').addEventListener('click', (e) => {
     window.location.href = 'server/server.html'; // Redireciona para a página de escolha
 });
 
-// Evento para "Entrar em Partida" (deixaremos para depois)
+// Evento para "Entrar em Partida"
 document.querySelector('.join-btn').addEventListener('click', (e) => {
     e.preventDefault();
-    alert('Funcionalidade de entrar em partida ainda não implementada!');
+    window.location.href = 'server/join.html';
 });

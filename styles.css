@@ -92,3 +92,54 @@ h2 {
     border-color: #ffd700;
     box-shadow: 0 0 10px #ffd700;
 }
+
+#roomInfo {
+    color: #fff;
+    font-size: 18px;
+    margin: 20px 0;
+}
+
+#playerList {
+    list-style: none;
+    padding: 0;
+    color: #fff;
+    font-size: 16px;
+}
+
+#playerList li {
+    padding: 5px;
+    border-bottom: 1px solid #d4af37;
+}
+
+.name-input {
+    margin: 20px 0;
+    color: #fff;
+}
+
+.name-input label {
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.name-input input {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 2px solid #4682b4;
+    background: #fff;
+    color: #000;
+}
+
+.name-input input:focus {
+    border-color: #ffd700;
+    outline: none;
+}
+
+.option.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.option.disabled img {
+    border-color: #555;
+}

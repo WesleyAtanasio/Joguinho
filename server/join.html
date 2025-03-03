@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles.css"> <!-- Reutilizando o mesmo CSS, mas podemos ajustar depois -->
-    <title>Escolha sua Picavara e Vacalo</title>
+    <link rel="stylesheet" href="../styles.css">
+    <title>Entrar em Partida</title>
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Escolha sua Picavara e Vacalo</h1>
-
-        <!-- Campo para o nome do jogador -->
+        <h1>Entrar em Partida</h1>
         <div class="name-input">
-            <label for="playerName">Seu Nome:</label>
-            <input type="text" id="playerName" placeholder="Digite seu nome"maxlength="16">
+            <label for="roomId">ID da Sala:</label>
+            <input type="text" id="roomId" placeholder="Digite o ID da sala">
+            <button id="checkRoomBtn" class="button">Verificar Sala</button>
         </div>
-
+        <div id="selection" style="display: none;">
+            <div class="name-input">
+                <label for="playerName">Seu Nome:</label>
+                <input type="text" id="playerName" placeholder="Digite seu nome" maxlength="16">
+            </div>
         <!-- Seção de Picavaras -->
         <h2>Escolha sua Picavara</h2>
         <div class="picavara-options">
@@ -62,13 +65,11 @@
                 <p>Vacalo Lele</p>
             </div>
         </div>
-        
 
-        <!-- Botão para confirmar e criar a sala -->
-        <button id="create-room-btn" class="button" disabled>Criar Sala</button>
+            <button id="joinRoomBtn" class="button" disabled>Entrar na Sala</button>
+        </div>
         <div id="roomInfo" style="color: white; margin-top: 20px;"></div>
     </div>
-
-    <script src="server.js"></script>
+    <script src="join.js"></script>
 </body>
 </html>
