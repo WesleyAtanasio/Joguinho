@@ -2,6 +2,7 @@ const socket = io('http://localhost:3000');
 
 const urlParams = new URLSearchParams(window.location.search);
 const roomId = urlParams.get('roomId');
+const startGameBtn = document.getElementById('startGameBtn');
 
 if (!roomId) {
     alert('Erro: Nenhum ID de sala fornecido!');
@@ -32,9 +33,15 @@ socket.on('roomUpdated', (roomData) => {
     updateRoom(roomData);
 });
 
-socket.on('startGame', ({ roomId, gameState }) => {
+socket.on('startGame', () => {
     console.log(`Recebido startGame para a sala ${roomId}, redirecionando para game.html`);
     window.location.href = `game.html?roomId=${roomId}`;
+});
+
+socket.on('error', (message) => {
+    console.error('Erro em lobby.js:', message);
+    alert(message);
+    window.location.href = '../index.html';
 });
 
 function updateRoom(roomData) {
@@ -50,10 +57,10 @@ function updateRoom(roomData) {
         <p>ID da Sala: ${roomId}</p>
         <p>Host: ${host.name} (Picavara ${host.picavara}, Vacalo ${host.vacalo})</p>
     `;
-    updatePlayerList(roomData.players);
+    updatePlayerList(roomData.players, roomData.host);
 }
 
-function updatePlayerList(players) {
+function updatePlayerList(players, hostId) {
     const playerList = document.getElementById('playerList');
     playerList.innerHTML = '';
     players.forEach(player => {
@@ -62,16 +69,21 @@ function updatePlayerList(players) {
         playerList.appendChild(li);
     });
 
-    const startGameBtn = document.getElementById('startGameBtn');
-    startGameBtn.disabled = players.length < 2 || !players.every(p => p.connected);
-    startGameBtn.onclick = () => {
-        console.log('Botão Iniciar Jogo clicado');
-        socket.emit('startGame');
-    };
+    // Habilitar/desabilitar botão "Iniciar Jogo"
+    if (socket.id === hostId && players.length === 2 && players.every(p => p.connected)) {
+        startGameBtn.disabled = false;
+        startGameBtn.style.opacity = '1';
+        startGameBtn.onclick = () => {
+            console.log('Botão Iniciar Jogo clicado');
+            socket.emit('startGame');
+            startGameBtn.disabled = true; // Desabilitar após o clique
+            startGameBtn.style.opacity = '0.5';
+        };
+    } else {
+        startGameBtn.disabled = true;
+        startGameBtn.style.opacity = '0.5';
+        startGameBtn.onclick = null; // Remover evento para não-hosts
+    }
 }
 
-socket.on('error', (message) => {
-    console.error('Erro em lobby.js:', message);
-    alert(message);
-    window.location.href = '../index.html';
-});
+socket.on('connect', () => console.log('Conectado ao servidor com ID:', socket.id));
